@@ -7,4 +7,4 @@ redirect_from:
   - /about.html
 ---
 
-University of Chicago Graduate and Computer Vision Researcher at University of Chicago Medicine
+Computer Vision Researcher at University of Chicago Medicine
