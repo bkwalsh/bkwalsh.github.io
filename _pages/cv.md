@@ -18,7 +18,7 @@ Work experience
 * Summer 2024: Researcher
   * University of Chicago Medicine
   * Computer Vision, Data Science
-  * Supervisor: Marcus R. Clark,
+  * Supervisor: Marcus R. Clark
 
 
 
