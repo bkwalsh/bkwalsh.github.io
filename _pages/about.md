@@ -14,5 +14,6 @@ Computer Vision Researcher at University of Chicago Medicine.
   Your browser does not support the video tag.
 </video>
 
-http://bkwalsh.github.io/files/cursor50.mp4 "video"
+_Partical Filter with Fruit Ninja_
+[See code](https://github.com/bkwalsh/Autonomous-Lab-HW-/tree/main/hw4/SDL_Fruit_Ninja "fruitninja").
 
