@@ -13,12 +13,10 @@ Education
 ======
 * B.A. in Computer Science (specialization: Machine Learning), University of Chicago, 2024
 
-Work experience
+Work Experience
 ======
-* Summer 2024: Researcher
-  * University of Chicago Medicine
-  * Computer Vision, Data Science
-  * Supervisor: Marcus R. Clark
+Currrently researching Computer Vision applications to cellular imaging at University of Chicago Medicine under Marcus R. Clark.
+
 
 
 
