@@ -18,5 +18,7 @@ Work Experience
 Researching Computer Vision applications to cellular imaging at University of Chicago Medicine under Marcus R. Clark.
 
 
+Here is my undergraduate [resume](http://github.com "Github").
+
 
 
