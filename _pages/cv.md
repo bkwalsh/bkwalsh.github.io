@@ -9,17 +9,17 @@ redirect_from:
 
 {% include base_path %}
 
+
+
 Education
 ======
 B.A. in Computer Science (specialization: Machine Learning), University of Chicago, 2024
 
 Work Experience
 ======
-Researching Computer Vision applications to cellular imaging at University of Chicago Medicine under Marcus R. Clark.
+Researching Computer Vision models for cellular imaging at University of Chicago Medicine advised by Marcus R. Clark.
 
-
-# Here is my undergraduate [resume](http://github.com "Github").
-Here is my undergraduate [resume](http://bkwalsh.github.io/files/dlpaper.pdf "Resume").
+Here is my undergraduate [resume](http://bkwalsh.github.io/files/Resumé.pdf "Resume").
 
 
 
