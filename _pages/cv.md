@@ -15,7 +15,7 @@ Education
 
 Work Experience
 ======
-Currrently researching Computer Vision applications to cellular imaging at University of Chicago Medicine under Marcus R. Clark.
+Researching Computer Vision applications to cellular imaging at University of Chicago Medicine under Marcus R. Clark.
 
 
 
