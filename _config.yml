@@ -27,6 +27,7 @@ author:
   bio              : "Software Engineer II at Uber"
   location         : "San Francisco, CA"
   employer         : "UChicago"
+  employer_url     : "https://www.uchicago.edu/"
   uri              : # URL
   email            : "bayardwalsh@gmail.com"
 
