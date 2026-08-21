@@ -1,6 +1,5 @@
 ---
 permalink: /
-title: "Bayard Walsh"
 author_profile: true
 redirect_from:
   - /about/
