@@ -11,11 +11,10 @@ author_profile: true
 
 {% for item in site.portfolio %}
   {% if item.type == "publication" %}
-    <article class="archive__item">
-      <h2 class="archive__item-title">{{ item.title }}</h2>
-      <p class="archive__item-subtitle">{{ item.excerpt }}</p>
+    <details class="archive__item">
+      <summary class="archive__item-title">{{ item.title }}</summary>
       <div class="archive__item-desc">{{ item.description | markdownify }}</div>
-    </article>
+    </details>
   {% endif %}
 {% endfor %}
 
@@ -23,10 +22,9 @@ author_profile: true
 
 {% for item in site.portfolio %}
   {% if item.type == "project" %}
-    <article class="archive__item">
-      <h2 class="archive__item-title">{{ item.title }}</h2>
-      <p class="archive__item-subtitle">{{ item.excerpt }}</p>
+    <details class="archive__item">
+      <summary class="archive__item-title">{{ item.title }}</summary>
       <div class="archive__item-desc">{{ item.description | markdownify }}</div>
-    </article>
+    </details>
   {% endif %}
 {% endfor %}
