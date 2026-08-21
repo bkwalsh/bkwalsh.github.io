@@ -28,6 +28,9 @@ body {
   color: var(--text);
   line-height: 1.7;
   padding-top: 80px !important;
+  /* footer is hidden, so drop the theme's sticky-footer spacer */
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   transition: none;
@@ -172,6 +175,11 @@ a:hover { color: var(--accent-hover); }
 /* Collapsible portfolio cards */
 details.archive__item {
   cursor: pointer;
+}
+
+/* closed cards must not reserve layout space for their content */
+details.archive__item:not([open]) .archive__item-desc {
+  display: none;
 }
 
 summary.archive__item-title {
