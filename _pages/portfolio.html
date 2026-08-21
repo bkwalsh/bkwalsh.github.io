@@ -9,16 +9,24 @@ author_profile: true
 
 <h2>Publications</h2>
 
-{% for post in site.portfolio %}
-  {% if post.type == "publication" %}
-    {% include archive-single.html %}
+{% for item in site.portfolio %}
+  {% if item.type == "publication" %}
+    <article class="archive__item">
+      <h2 class="archive__item-title">{{ item.title }}</h2>
+      <p class="archive__item-subtitle">{{ item.excerpt }}</p>
+      <div class="archive__item-desc">{{ item.description | markdownify }}</div>
+    </article>
   {% endif %}
 {% endfor %}
 
 <h2>Projects</h2>
 
-{% for post in site.portfolio %}
-  {% if post.type == "project" %}
-    {% include archive-single.html %}
+{% for item in site.portfolio %}
+  {% if item.type == "project" %}
+    <article class="archive__item">
+      <h2 class="archive__item-title">{{ item.title }}</h2>
+      <p class="archive__item-subtitle">{{ item.excerpt }}</p>
+      <div class="archive__item-desc">{{ item.description | markdownify }}</div>
+    </article>
   {% endif %}
 {% endfor %}
