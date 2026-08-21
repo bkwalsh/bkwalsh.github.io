@@ -26,6 +26,7 @@ author:
   pronouns         : # example: "she/her"  
   bio              : "Software Engineer II at Uber"
   location         : "San Francisco, CA"
+  location_url     : "https://www.google.com/maps/search/?api=1&query=San+Francisco%2C+CA"
   employer         : "UChicago"
   employer_url     : "https://www.uchicago.edu/"
   uri              : # URL
