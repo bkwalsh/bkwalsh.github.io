@@ -26,3 +26,10 @@ group :jekyll_plugins do
   gem 'hawkins'
   gem "webrick", "~> 1.8"
 end
+
+# Required for Jekyll 3.9 on Ruby >= 3.4
+gem "csv"
+gem "base64"
+gem "bigdecimal"
+gem "logger"
+gem "mutex_m"
