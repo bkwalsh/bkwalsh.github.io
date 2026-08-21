@@ -1,0 +1,5 @@
+#!/bin/sh
+# Local preview: builds the site and serves it at http://localhost:4000
+set -e
+bundle install
+exec bundle exec jekyll serve --livereload
