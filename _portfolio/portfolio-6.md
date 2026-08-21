@@ -1,6 +1,6 @@
 ---
 title: "Spatial Immune Cells Profiling in IgG4-Related Kidney Disease"
-excerpt: "UChicago Medicine — Computational Pathology"
+excerpt: "Computational Pathology"
 collection: portfolio
 type: publication
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Solving the Identity Crisis for AI Agents"
-excerpt: "Uber — AI Security Infrastructure"
+excerpt: "AI Security Infrastructure"
 collection: portfolio
 type: publication
 ---
