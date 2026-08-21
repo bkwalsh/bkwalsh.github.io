@@ -102,6 +102,33 @@ a:hover { color: var(--accent-hover); }
   }
 }
 
+/* Theme toggle: ghost icon, sits flush right in the bar */
+.theme-toggle {
+  position: absolute;
+  right: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  transition: color 0.15s ease, transform 0.2s ease;
+
+  &:hover {
+    color: var(--accent);
+    transform: translateY(-50%) scale(1.12);
+  }
+}
+
 /* ---- Sidebar ------------------------------------------------------------- */
 .sidebar {
   color: var(--muted);
@@ -164,6 +191,20 @@ a:hover { color: var(--accent-hover); }
 }
 
 /* ---- Dark mode (follows OS preference) ---------------------------------- */
+[data-theme="dark"] {
+  --bg: #10141c;
+  --bg-soft: #171d28;
+  --text: #d7dde6;
+  --muted: #97a1ad;
+  --border: #26303e;
+  --accent: #7da0f0;
+  --accent-hover: #9cb8f7;
+  --masthead-bg: rgba(16, 20, 28, 0.82);
+  --card-bg: #161c26;
+  --card-bg-hover: #1d2532;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #10141c;

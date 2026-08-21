@@ -19,5 +19,26 @@
         <ul class="hidden-links hidden"></ul>
       </nav>
     </div>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"></button>
   </div>
 </div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    function glyph(btn) { btn.textContent = root.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263D'; }
+    function paint() {
+      var btn = document.getElementById('theme-toggle');
+      if (btn) glyph(btn);
+    }
+    paint();
+    document.addEventListener('DOMContentLoaded', paint);
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('#theme-toggle') : null;
+      if (!btn) return;
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (err) {}
+      glyph(btn);
+    });
+  })();
+</script>
