@@ -61,6 +61,12 @@ a:focus-visible {
    and tab already say it. */
 h1.page__title { display: none; }
 
+.section-subtitle {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: -0.4em 0 0.8em;
+}
+
 /* ---- Masthead ----------------------------------------------------------- */
 .masthead {
   background: var(--masthead-bg);
