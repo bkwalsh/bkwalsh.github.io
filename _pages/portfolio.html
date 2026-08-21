@@ -7,8 +7,18 @@ author_profile: true
 
 {% include base_path %}
 
-A collection of Machine Learning projects from undergrad.
+<h2>Publications</h2>
+
+{% for post in site.portfolio %}
+  {% if post.type == "publication" %}
+    {% include archive-single.html %}
+  {% endif %}
+{% endfor %}
+
+<h2>Projects</h2>
 
 {% for post in site.portfolio reversed %}
-  {% include archive-single.html %}
+  {% if post.type == "project" %}
+    {% include archive-single.html %}
+  {% endif %}
 {% endfor %}
