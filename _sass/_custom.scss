@@ -169,14 +169,37 @@ a:hover { color: var(--accent-hover); }
   margin-top: 0.2em;
 }
 
-.archive__item-subtitle {
-  color: var(--muted);
-  font-size: 0.95rem;
-  margin: 0.15em 0 0.4em;
+/* Collapsible portfolio cards */
+details.archive__item {
+  cursor: pointer;
+}
+
+summary.archive__item-title {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+
+  &::-webkit-details-marker { display: none; }
+
+  &::after {
+    content: "\203A"; /* right angle quote */
+    color: var(--muted);
+    font-size: 1.1em;
+    transition: transform 0.2s ease, color 0.15s ease;
+  }
+}
+
+details[open] summary.archive__item-title::after {
+  transform: rotate(90deg);
+  color: var(--accent);
 }
 
 .archive__item-desc {
   font-size: 0.98rem;
+  cursor: auto;
+  padding-top: 0.4em;
 
   p { margin: 0; }
   video {
