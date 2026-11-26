@@ -1,8 +1,8 @@
 ---
-permalink: /
+title: "About"
+permalink: /about/
 author_profile: true
 redirect_from:
-  - /about/
   - /about.html
   - /cv/
   - /resume

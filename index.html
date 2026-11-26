@@ -1,0 +1,25 @@
+---
+layout: null
+permalink: /
+sitemap: false
+---
+{% include base_path %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ site.title }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="{{ site.url }}/about/">
+<meta name="description" content="{{ site.description }}">
+<script>location.replace("{{ base_path }}/about/" + location.search + location.hash);</script>
+<meta http-equiv="refresh" content="0; url={{ base_path }}/about/">
+<style>
+  html { background: #ffffff; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { html { background: #10141c; } }
+</style>
+<script>
+  try { var t = localStorage.getItem('theme'); if (t) document.documentElement.style.background = t === 'dark' ? '#10141c' : '#ffffff'; } catch (e) {}
+</script>
+</head>
+<body><a href="{{ base_path }}/about/" style="position:absolute;left:-9999px">About Bayard Walsh</a></body>
+</html>
