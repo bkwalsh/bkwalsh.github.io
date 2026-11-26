@@ -1,5 +1,6 @@
 # Reading list. `read` is the date finished: it only sets the order and is never shown.
 # Covers live in /images/books/<slug>-160.webp and -320.webp; w/h are the 320 size.
+# GENERATED from books-read.txt in the private personal-db repo: edit there, not here.
 
 - slug: algorithms-to-live-by
   title: "Algorithms to Live By"
