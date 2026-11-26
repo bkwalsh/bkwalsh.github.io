@@ -15,3 +15,6 @@ node_modules
 package-lock.json
 # Ignore local bundler config
 .bundle/
+
+# Python bytecode
+__pycache__/
