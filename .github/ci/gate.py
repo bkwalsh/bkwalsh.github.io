@@ -48,12 +48,14 @@ def main():
 
     rows = ["| Page | Category | Before | After |", "|---|---|---|---|"]
     lb, la = before.get("lighthouse", {}), after.get("lighthouse", {})
+    if not lb or not la:
+        problems.append("Lighthouse results missing")
     for page in sorted(set(lb) | set(la)):
         for cat, tol in TOLERANCE.items():
             b, a = lb.get(page, {}).get(cat), la.get(page, {}).get(cat)
             rows.append(f"| {page} | {cat} | {b} | {a} |")
-            if a is None and b is not None:
-                problems.append(f"Lighthouse {cat} failed to measure on {page}")
+            if a is None or b is None:
+                problems.append(f"Lighthouse {cat} could not be measured on {page} (before={b}, after={a})")
             elif a is not None and b is not None and a < b - tol:
                 problems.append(f"Lighthouse {cat} on {page} dropped {b} -> {a} (tolerance {tol})")
 
