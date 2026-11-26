@@ -1,94 +1,143 @@
-name: Weekly cleanup
-# Every Monday, Claude looks for unused/unneeded code and files and opens a PR.
-# It never pushes to master: you review and merge the PR yourself.
+name: Weekly cleanup & performance
+# Every Monday, Claude removes unused code/files and fixes performance problems,
+# then lands the change itself if every automated check passes:
+#   - site builds; About/Portfolio/Books pages still exist
+#   - no new broken internal links
+#   - Lighthouse performance/accessibility/best-practices/SEO don't regress (.github/ci/gate.py)
+#   - no edits to .github/, the books sync output, or CNAME; edits to existing files stay under 400 lines
+# If any check fails, the PR stays open (label: needs-review) for you instead of merging.
+# To undo a landed change: revert its squash commit on master.
 on:
   schedule:
     - cron: "0 14 * * 1" # Mondays 14:00 UTC (6am PT)
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only run the checks (no Claude, no PR)"
+        type: boolean
+        default: false
 permissions:
   contents: write
   pull-requests: write
+  pages: write
 concurrency:
   group: weekly-cleanup
   cancel-in-progress: false
+env:
+  JEKYLL_BUILD: bundle exec jekyll build --quiet --config _config.yml,.github/ci/ci-config.yml
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
-      - name: Skip if last week's cleanup PR is still open
+      - name: Skip if a cleanup PR is waiting for review
         id: open
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           n=$(gh pr list --label cleanup --state open --json number --jq length)
           echo "count=$n" >> "$GITHUB_OUTPUT"
-          [ "$n" = 0 ] || echo "::notice::A cleanup PR is already open; skipping this week."
+          [ "$n" = 0 ] || echo "::notice::A cleanup PR is waiting for review; skipping this week."
       - uses: ruby/setup-ruby@v1
         if: steps.open.outputs.count == '0'
         with:
           ruby-version: "3.3"
           bundler-cache: true
-      - name: Baseline build
+      - uses: actions/setup-node@v5
         if: steps.open.outputs.count == '0'
-        run: bundle exec jekyll build --quiet
-      - name: Find and remove unused code
+        with:
+          node-version: 22
+      - name: Baseline build and measurements
         if: steps.open.outputs.count == '0'
+        run: |
+          npm install -g --silent lighthouse@13
+          $JEKYLL_BUILD
+          python3 .github/ci/site_check.py _site /tmp/before.json
+
+      - name: Clean up and improve performance
+        if: steps.open.outputs.count == '0' && !inputs.dry_run
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
           claude_args: >-
+            --model claude-sonnet-5-5
             --max-turns 60
-            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(git rm:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(grep:*),Bash(ls:*),Bash(find:*),Bash(bundle exec jekyll build:*)"
+            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(git rm:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(grep:*),Bash(ls:*),Bash(find:*),Bash(du:*),Bash(python3:*),Bash(bundle exec jekyll build:*)"
           prompt: |
-            You are doing a weekly cleanup of this Jekyll personal website (GitHub Pages, master branch).
-            Goal: remove code and files that are unused or unneeded, conservatively.
+            You maintain this Jekyll personal website (GitHub Pages, master branch). Your change will be
+            merged automatically if it passes the checks in .github/ci/gate.py, so be careful and conservative.
 
-            Good candidates:
-            - Leftovers from the academicpages template that no page uses (sample publications/talks/teaching
-              entries, placeholder PDFs in files/, markdown_generator/, unused layouts/includes/sass partials,
-              unused JS, dead _config.yml settings, unused images).
-            - Anything not referenced from any page, layout, include, stylesheet, script or config.
+            Baseline measurements are in /tmp/before.json: every built page, broken internal links, bytes by
+            file type, and Lighthouse scores and metrics (median of 3 runs) for /about/, /portfolio/, /books/.
+
+            Do two things:
+            1. Remove unused or unneeded code and files: academicpages template leftovers no page uses
+               (sample publications/talks/teaching entries, placeholder PDFs in files/, markdown_generator/,
+               unused layouts/includes/sass partials/JS, dead _config.yml settings, unreferenced images).
+               Before deleting anything, grep the whole repo (including _config.yml and _data) for its name,
+               slug and path, and only delete it if nothing live references it.
+            2. Fix performance where it lags: use the Lighthouse metrics to find the biggest wins (oversized or
+               unoptimized images, render-blocking CSS/JS, unused CSS/JS, missing width/height or lazy loading,
+               unneeded third-party requests). Make targeted fixes only.
 
             Rules:
-            - Only delete or trim things you have confirmed are unreferenced (grep for every filename/slug/
-              include name across the repo, including _config.yml and _data, before removing it).
-            - Never touch _data/books.yml or images/books/ (generated by an external sync).
-            - Never rewrite the site owner's own writing or change how live pages look or behave.
-              Do not refactor, restyle or reformat working code.
-            - Keep files GitHub Pages needs (CNAME if present, Gemfile, _config.yml, LICENSE, README.md).
-            - Do not commit; leave changes in the working tree. Use `git rm` for deletions.
-            - After your changes, run `bundle exec jekyll build --quiet` and make sure it succeeds and that
-              every page in _site that existed before still exists (except pages you intentionally removed
-              because they were template samples).
-            - If nothing is worth removing, change nothing.
+            - Never edit .github/, _data/books.yml, images/books/ or CNAME (an external sync owns the books data).
+            - Never rewrite the owner's own writing, and don't visibly change how pages look. No redesigns,
+              restyling or reformatting of working code.
+            - Keep edits to existing files small (well under 400 changed lines in total). Deleting whole unused
+              files is fine.
+            - Don't commit; leave changes in the working tree. Use `git rm` for deletions.
+            - Verify: run `bundle exec jekyll build --quiet --config _config.yml,.github/ci/ci-config.yml`,
+              then `python3 .github/ci/site_check.py _site /tmp/after.json --no-lighthouse` and confirm there
+              are no new broken links and that /about/, /portfolio/ and /books/ still build.
+            - If nothing is clearly worth changing, change nothing. Nothing is better than a risky change.
 
-            Finally write a short summary to /tmp/cleanup-summary.md: a bullet per removal with the reason
-            (what you grepped for and found no references), plus anything you suspect is unused but left alone.
-      - name: Verify build
+            Finally write /tmp/cleanup-summary.md: one bullet per change with the reason (for deletions, what
+            you grepped for and found no references to), plus anything suspicious you left alone.
+
+      - name: Measure after
         if: steps.open.outputs.count == '0'
-        run: bundle exec jekyll build --quiet
-      - name: Open PR
+        run: |
+          $JEKYLL_BUILD
+          python3 .github/ci/site_check.py _site /tmp/after.json
+      - name: Gate, then land or ask for review
         if: steps.open.outputs.count == '0'
         env:
           GH_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
           git add -A
           for p in .jekyll-cache .sass-cache .bundle; do git reset -q -- "$p" 2>/dev/null || true; done
+          python3 .github/ci/gate.py /tmp/before.json /tmp/after.json /tmp/gate.md
+          gate=$?
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run: gate exit $gate"
+            exit $gate
+          fi
           if git diff --cached --quiet; then
-            echo "Nothing to clean up this week."
+            echo "Nothing to change this week."
             exit 0
           fi
+          set -e
           branch="cleanup/$(date -u +%F)"
           git config user.name "weekly-cleanup"
           git config user.email "weekly-cleanup@users.noreply.github.com"
           git checkout -q -b "$branch"
-          git commit -q -m "Weekly cleanup: remove unused code and files"
+          git commit -q -m "Weekly cleanup: remove unused code, improve performance"
           git push -q origin "$branch"
           gh label create cleanup --color BFD4F2 --description "Automated weekly cleanup" 2>/dev/null || true
-          body=$( { echo "Automated weekly cleanup. The site builds with these changes. Review before merging."; echo; cat /tmp/cleanup-summary.md 2>/dev/null || echo "(no summary written)"; } )
-          gh pr create --base master --head "$branch" --label cleanup \
-            --title "Weekly cleanup $(date -u +%F)" --body "$body"
+          gh label create needs-review --color D93F0B --description "Automated change failed a check" 2>/dev/null || true
+          body=$( { cat /tmp/cleanup-summary.md 2>/dev/null || echo "(no summary written)"; echo; cat /tmp/gate.md; } )
+          title="Weekly cleanup $(date -u +%F)"
+          if [ "$gate" = 0 ]; then
+            gh pr create --base master --head "$branch" --label cleanup --title "$title" --body "$body"
+            gh pr merge "$branch" --squash --delete-branch
+            gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" >/dev/null || echo "::warning::Pages build request failed; the next push will rebuild."
+            echo "Landed."
+          else
+            gh pr create --base master --head "$branch" --label cleanup --label needs-review --title "$title" --body "$body"
+            echo "::warning::Checks failed; PR left open for review."
+          fi
