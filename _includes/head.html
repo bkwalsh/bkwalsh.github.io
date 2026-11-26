@@ -21,18 +21,12 @@
 </script>
 
 <script>
-  (function () {
-    var t = localStorage.getItem('theme');
-    if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', t);
-  })();
-</script>
-
-<script>
   document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
 </script>
 
 <!-- For all browsers -->
+<link rel="preload" href="{{ base_path }}/assets/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ base_path }}/assets/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ base_path }}/assets/css/main.css">
 
 <meta http-equiv="cleartype" content="on">

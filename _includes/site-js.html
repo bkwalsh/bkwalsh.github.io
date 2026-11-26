@@ -1,0 +1,80 @@
+<script>
+/* Vanilla replacement for the theme's jQuery bundle (main.min.js).
+   Keeps the two behaviours the site uses: greedy nav overflow and the
+   sidebar "Follow" dropdown. Native position:sticky replaces Stickyfill. */
+(function () {
+  function contentWidth(el) {
+    var cs = getComputedStyle(el);
+    return el.getBoundingClientRect().width -
+      parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) -
+      parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
+  }
+  function visible(el) { return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
+
+  /* ---- Greedy navigation ---- */
+  var nav = document.getElementById('site-nav');
+  if (nav) {
+    var btn = nav.querySelector('button');
+    var vlinks = nav.querySelector('.visible-links');
+    var hlinks = nav.querySelector('.hidden-links');
+    var breaks = [];
+    var updateNav = function () {
+      var hidden = btn.classList.contains('hidden');
+      var space = hidden ? contentWidth(nav) : contentWidth(nav) - contentWidth(btn) - 30;
+      if (contentWidth(vlinks) > space) {
+        breaks.push(contentWidth(vlinks));
+        var items = vlinks.querySelectorAll(':scope > :not(.masthead__menu-item--lg)');
+        if (items.length) hlinks.insertBefore(items[items.length - 1], hlinks.firstChild);
+        else return;
+        if (hidden) btn.classList.remove('hidden');
+      } else {
+        if (space > breaks[breaks.length - 1]) {
+          if (hlinks.firstElementChild) vlinks.appendChild(hlinks.firstElementChild);
+          breaks.pop();
+        }
+        if (breaks.length < 1) {
+          btn.classList.add('hidden');
+          hlinks.classList.add('hidden');
+        }
+      }
+      btn.setAttribute('count', breaks.length);
+      if (contentWidth(vlinks) > space) updateNav();
+    };
+    window.addEventListener('resize', updateNav);
+    btn.addEventListener('click', function () {
+      hlinks.classList.toggle('hidden');
+      btn.classList.toggle('close');
+    });
+    updateNav();
+  }
+
+  /* ---- Sidebar "Follow" dropdown ---- */
+  var urls = document.querySelector('.author__urls');
+  var follow = document.querySelector('.author__urls-wrapper button');
+  if (!urls) return;
+  var sidebar = function () {
+    var width = document.documentElement.clientWidth;
+    var show = follow ? !visible(follow) : width > 1024;
+    var count = document.querySelectorAll('.author__urls.social-icons li').length -
+      document.querySelectorAll('li[class="author__desktop"]').length;
+    if (width <= 1024 && count === 0) {
+      if (follow) follow.style.display = 'none';
+      show = false;
+    }
+    urls.style.display = show ? 'block' : 'none';
+  };
+  sidebar();
+  window.addEventListener('resize', sidebar);
+  if (follow) follow.addEventListener('click', function () {
+    var opening = !visible(urls);
+    if (opening) urls.style.display = 'block';
+    var anim = urls.animate ? urls.animate(
+      [{ opacity: opening ? 0 : 1 }, { opacity: opening ? 1 : 0 }], { duration: 200 }) : null;
+    if (!opening) {
+      if (anim) anim.onfinish = function () { urls.style.display = 'none'; };
+      else urls.style.display = 'none';
+    }
+    follow.classList.toggle('open');
+  });
+})();
+</script>
