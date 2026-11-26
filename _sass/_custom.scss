@@ -389,9 +389,18 @@ details[open] summary.archive__item-title::after {
    for the absolutely-positioned theme toggle on the right. */
 @media (max-width: 600px) {
   .masthead__menu { padding-right: 40px; }
-  .masthead__menu-item--lg { padding-right: 0.9em; }
-  .greedy-nav .visible-links a { margin: 0 0.55rem; font-size: 0.98rem; }
-  .greedy-nav .masthead__menu-item--lg a { font-size: 1.05rem; margin-left: 0; }
+  .theme-toggle { right: 0.25em; }
+  .masthead__menu-item--lg { padding-right: 0.35em; }
+  .greedy-nav .visible-links li:first-child { white-space: nowrap; text-wrap: nowrap; }
+  .greedy-nav .visible-links a { margin: 0 0.36rem; font-size: 0.9rem; }
+  .greedy-nav .masthead__menu-item--lg a { font-size: 1rem; margin-left: 0; }
+
+  /* overflow button (only on the narrowest phones): quiet icon, no grey box */
+  .greedy-nav button {
+    background: transparent;
+    height: 44px;
+    margin-right: 6px;
+  }
 }
 
 @keyframes book-rise {
