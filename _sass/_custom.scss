@@ -264,6 +264,148 @@ details[open] summary.archive__item-title::after {
   a { color: inherit; text-decoration: none; }
 }
 
+/* ---- Bookshelf ---------------------------------------------------------------
+   Covers stand on a shared baseline (books of different heights on a shelf),
+   with a printed-spine fold and a slight 3D tilt on hover. Each cover shows its
+   average colour (--c) until the image arrives, and width/height attributes
+   reserve the space so nothing shifts. */
+.shelf__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.shelf__count {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.shelf {
+  list-style: none;
+  margin: 1.6em 0 2em;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 2.4rem 1.75rem;
+}
+
+.book {
+  margin: 0;
+  animation: book-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 30ms);
+}
+
+/* every cell is as tall as the tallest cover shape, covers sit on its floor */
+.book__stage {
+  aspect-ratio: 0.62;
+  display: flex;
+  align-items: flex-end;
+  perspective: 1000px;
+}
+
+.book__cover {
+  position: relative;
+  width: 100%;
+  background: var(--c);
+  border-radius: 2px 5px 5px 2px;
+  box-shadow:
+    0 1px 1px rgba(10, 15, 30, 0.08),
+    0 6px 12px -4px rgba(10, 15, 30, 0.22),
+    0 18px 30px -14px rgba(10, 15, 30, 0.35);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+  }
+
+  /* spine fold + soft gloss, printed over the artwork */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg,
+        rgba(0, 0, 0, 0.22) 0,
+        rgba(255, 255, 255, 0.28) 1.4%,
+        rgba(0, 0, 0, 0.14) 3.2%,
+        rgba(255, 255, 255, 0.06) 5%,
+        rgba(255, 255, 255, 0) 8%),
+      linear-gradient(115deg,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.16) 50%,
+        rgba(255, 255, 255, 0) 60%);
+    background-size: 100% 100%, 300% 100%;
+    background-position: 0 0, 100% 0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    transition: background-position 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+.book:hover .book__cover {
+  transform: translateY(-8px) rotateY(-14deg);
+  box-shadow:
+    0 1px 1px rgba(10, 15, 30, 0.08),
+    10px 14px 18px -8px rgba(10, 15, 30, 0.28),
+    18px 30px 40px -18px rgba(10, 15, 30, 0.45);
+
+  &::after { background-position: 0 0, 0 0; }
+}
+
+.book__title {
+  margin: 0.95em 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+
+.book__author {
+  margin: 0.25em 0 0;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.9rem 0.9rem;
+  }
+  .book__title { font-size: 0.74rem; }
+  .book__author { font-size: 0.68rem; }
+}
+
+/* Phones: keep all nav items in the bar (no overflow menu) and leave room
+   for the absolutely-positioned theme toggle on the right. */
+@media (max-width: 600px) {
+  .masthead__menu { padding-right: 40px; }
+  .masthead__menu-item--lg { padding-right: 0.9em; }
+  .greedy-nav .visible-links a { margin: 0 0.55rem; font-size: 0.98rem; }
+  .greedy-nav .masthead__menu-item--lg a { font-size: 1.05rem; margin-left: 0; }
+}
+
+@keyframes book-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book { animation: none; }
+  .book__cover,
+  .book__cover::after { transition: none; }
+  .book:hover .book__cover { transform: none; }
+}
+
 /* ---- Footer ----------------------------------------------------------------- */
 .page__footer {
   display: none;
